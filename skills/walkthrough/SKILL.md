@@ -22,6 +22,7 @@ Ask the user:
 
 Wait for the answer, then route to the correct mode.
 
+Always ask before starting. Never assume the user wants a full walkthrough, they may just want a quick explanation of one part, or they may want to debug a specific issue.
 ---
 
 ## MODE LEARN `/walkthrough learn`
