@@ -65,15 +65,34 @@ Keep it concise. The map should fit in ~20 lines.
 
 ---
 
-### Step 3 — Level inference
+### Step 2.5 — Focus and prior knowledge
 
-No calibration questions. Infer the user's level silently from the vocabulary they use when responding to what they want to explore or when asking follow-up questions.
+After presenting the architecture map, ask:
 
-- Technical terms used correctly → intermediate/advanced
-- Behavior described without technical terms → beginner
-- Mix of both → beginner with some exposure
+> "Which part do you want to explore first?"
 
-Never disclose the inferred level. Use it only to calibrate explanations throughout the walkthrough.
+Once the user picks a part, ask two more questions (can be asked together):
+
+> "What specifically do you want to understand about it? And what do you already know about this area?"
+
+**Rules:**
+- Wait for the user to choose before asking the follow-up pair.
+- Do not skip this step for small projects — knowing what the user already knows always matters.
+- Use the answers as the primary input for level calibration in the next step.
+
+---
+
+### Step 3 — Level calibration
+
+Use the answers from Step 2.5 as the **primary source** to determine the user's level:
+
+- Describes what they already know in technical terms → intermediate/advanced
+- Says "I don't know anything about this" or uses only behavioral descriptions → beginner
+- Mix: knows some concepts but not others → beginner with exposure
+
+**Fine-tune** using vocabulary observed in their follow-up responses throughout the walkthrough (technical terms used correctly = nudge up; confusion with basic terms = nudge down).
+
+Never disclose the calibrated level. Use it only to shape explanations and analogies.
 
 ---
 
@@ -114,6 +133,43 @@ Search: "[exact term to look up]"
 ```
 
 Limit to 5 topics. Prioritize by impact on the current project, not by what "would be good to know in general".
+
+---
+
+### Step 6 — Study guide document
+
+After presenting the study plan, ask:
+
+> "Would you like me to generate a study guide file with everything we covered? It'll be saved to `docs/walkthrough/study-guide.md`."
+
+If the user confirms, create the folder `docs/walkthrough/` (if it doesn't exist) and write `study-guide.md` with the following structure:
+
+```markdown
+# Study Guide — [Project Name]
+_Session: [date] | Level: [beginner / intermediate / advanced]_
+
+## Project Architecture
+[Summary of the architecture map from Step 2 — stack, folder structure, main flow diagram]
+
+## Session Summary
+[Synthesis of the walkthrough blocks covered: what was explained, key concepts introduced, analogies used]
+
+## Study Plan
+[Expanded version of each topic from Step 5, enriched with session context]
+
+### [Topic] — [Why it matters for this project]
+- **Where it appears:** [file, function, or layer in this codebase]
+- **Starting point:** [first thing to search or read]
+- **Going deeper:** [what to study after the basics, concrete search terms]
+- **Goal:** [what understanding this topic looks like in practice]
+```
+
+**Level shapes the document:**
+- **Beginner:** include analogies used during the session, explain why each topic matters before what to search
+- **Intermediate:** focus on how each topic connects to this specific codebase, fewer analogies
+- **Advanced:** concise, emphasizes tradeoffs and deeper references, skip foundational explanations
+
+Expand the study plan beyond the 5-topic limit from Step 5 if the session covered more ground. Cover everything relevant — this document is meant to be kept as a reference, not read in one sitting.
 
 ---
 
@@ -167,6 +223,49 @@ End with 1-2 study topics directly tied to the gap that caused the bug:
 > - **[topic]** — search: '[term]'"
 
 No full study plan in debug mode. Full focus on the problem.
+
+---
+
+### Step 5 — Debug guide document
+
+After presenting the focused recommendation, ask:
+
+> "Would you like me to generate a debug guide for this problem? It'll be saved to `docs/walkthrough/debug-[topic].md`."
+
+Use a short slug for `[topic]` based on the problem (e.g., `debug-auth-token-expiry.md`, `debug-null-pointer-api.md`).
+
+If the user confirms, create the folder `docs/walkthrough/` (if it doesn't exist) and write the file with the following structure:
+
+```markdown
+# Debug Guide — [Problem Description]
+_Session: [date] | Level: [beginner / intermediate / advanced]_
+
+## The Problem
+[What was happening, what the user expected, what was observed instead]
+
+## Root Cause
+[Why it happened — explained at the user's level]
+
+## Architecture Context
+[Only the relevant part: the component, function, or flow where the bug lived]
+
+## Fix Applied
+[What was changed or what the user needs to change — concise]
+
+## Study Plan
+[Focused on the concepts that caused this bug and how to prevent similar ones]
+
+### [Topic] — [Why this caused the bug]
+- **The gap:** [what wasn't understood that led to the bug]
+- **Starting point:** [first thing to search or read]
+- **Going deeper:** [what to study to truly master this]
+- **Goal:** [what it looks like to not make this mistake again]
+```
+
+**Level shapes the document:**
+- **Beginner:** explain the root cause with an analogy, make the fix feel approachable, study plan is step-by-step
+- **Intermediate:** focus on the "what it should do vs. what it did" contrast, study plan emphasizes edge cases
+- **Advanced:** root cause as a tradeoff or edge case, study plan goes deep into internals or specs
 
 ---
 
